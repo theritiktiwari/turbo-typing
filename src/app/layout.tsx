@@ -8,7 +8,10 @@ const font = Roboto_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Speed Typing",
+  title: {
+    template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Speed Typing"}`,
+    default: `Home | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Speed Typing"}`,
+  },
   description: "A simple speed typing web app, where you can test your typing speed.",
 };
 
