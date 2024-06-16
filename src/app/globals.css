@@ -90,3 +90,35 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.flex-center {
+  @apply flex items-center justify-center;
+}
+
+.flex-between {
+  @apply flex items-center justify-between;
+}
+
+.flex-around {
+  @apply flex items-center justify-around;
+}
+
+.flex-end {
+  @apply flex items-center justify-end;
+}
+
+.link {
+  @apply text-primary font-semibold;
+}
+
+.auth-layout {
+  @apply px-5 w-screen h-screen flex items-center justify-center;
+}
+
+.auth-card {
+  @apply w-full md:w-[45%] lg:w-[35%];
+}
+
+.description-text {
+  @apply text-sm text-muted-foreground;
+}
