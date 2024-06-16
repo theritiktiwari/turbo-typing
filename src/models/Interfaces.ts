@@ -2,13 +2,13 @@ import { Document, Schema } from 'mongoose';
 
 export interface IUser extends Document {
     username: string;
+    usernameChangeDate?: Date;
     email: string;
-    badges: string[];
     experience: number;
     level: number;
-    usernameChangeDate: Date;
-    typingLessonsProgress: { [lessonId: string]: boolean };
-    touchTypingProgress: number;
+    badges?: string[];
+    typingLessonsProgress?: { [lessonId: string]: boolean };
+    touchTypingProgress?: number;
     instagramUsername?: string;
     twitterUsername?: string;
     linkedinUsername?: string;
@@ -26,7 +26,7 @@ export interface ILesson extends Document {
 export interface ITestResult extends Document {
     userId: Schema.Types.ObjectId;
     wpm: number;
-    accuracy: number; 
+    accuracy: number;
     duration: number; // Duration of the typing test in seconds
     textSnippet: string; // The paragraph or text snippet used for the test
 }

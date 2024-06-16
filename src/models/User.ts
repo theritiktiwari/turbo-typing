@@ -10,17 +10,17 @@ const UserSchema: Schema<IUser> = new Schema({
         lowercase: true,
         match: [/.+\@.+\..+/, 'Email address is not valid']
     },
+    badges: { type: [String] },
+    experience: { type: Number, default: 0 },
+    level: { type: Number, default: 1 },
+    usernameChangeDate: { type: Date },
+    typingLessonsProgress: { type: Map, of: Boolean },
+    touchTypingProgress: { type: Number },
+    role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
     instagramUsername: { type: String },
     twitterUsername: { type: String },
     linkedinUsername: { type: String },
     website: { type: String },
-    badges: { type: [String], default: [] },
-    experience: { type: Number, default: 0 },
-    level: { type: Number, default: 1 },
-    usernameChangeDate: { type: Date, default: Date.now },
-    typingLessonsProgress: { type: Map, of: Boolean, default: {} },
-    touchTypingProgress: { type: Number, default: 0 },
-    role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
 }, { timestamps: true });
 
 const UserModel: Model<IUser> = (mongoose.models.User as mongoose.Model<IUser>) || mongoose.model<IUser>('User', UserSchema);
