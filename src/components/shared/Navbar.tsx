@@ -5,6 +5,7 @@ import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { Info, Keyboard, LogOut, Settings, UserRound } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 const Logo = () => {
     const logo = process.env.NEXT_PUBLIC_APP_NAME ?? "Speed Typing";
@@ -71,6 +72,8 @@ export default function Navbar() {
                                     </Tooltip>
                                 </Link>
                             ))}
+
+                            <ThemeToggle className="hidden sm:block" /> {/* Button for theme toggle */}
                         </nav>
                     </div>
 

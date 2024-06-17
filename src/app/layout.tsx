@@ -3,6 +3,7 @@ import { Roboto_Serif } from "next/font/google";
 import "./globals.css";
 
 import { AuthProvider } from "@/providers/auth-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 const font = Roboto_Serif({
   weight: ["200", "300", "400", "500", "600", "700", "900"],
@@ -24,9 +25,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${font.className} dark`}>
+      <body className={font.className}>
         <AuthProvider>
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+          >
+            {children}
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
