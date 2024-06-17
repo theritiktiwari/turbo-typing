@@ -10,6 +10,7 @@ const tokenValue = (token: any, user: any) => {
     token.username = user.username;
     token.email = user.email;
     token.role = user.role;
+    token.level = user.level;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -43,6 +44,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.username = token.username;
                 session.user.email = token.email;
                 session.user.role = token.role;
+                session.user.level = token.level;
             }
             return session;
         }
