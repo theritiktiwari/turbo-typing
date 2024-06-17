@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
-
 export default function Home() {
   const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Turbo Typing";
 
   return (
-    <div className="h-[90vh] flex-center main-container">
+    <div className="flex-center main-container h-[65vh] sm:h-[63vh] md:h-[70vh]">
       <div className="flex-center flex-col">
         <p className="text-5xl sm:text-7xl font-bold leading-tight text-center">
           <span className="relative inline-flex sm:inline">

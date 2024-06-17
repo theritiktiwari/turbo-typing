@@ -4,8 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { Info, Keyboard, LogOut, Settings, UserRound } from "lucide-react";
+import { FaUserCircle } from "react-icons/fa";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { ThemeToggle } from "@/components/shared/ThemeToggle";
 
 const Logo = () => {
     const logo = process.env.NEXT_PUBLIC_APP_NAME ?? "Speed Typing";
@@ -72,8 +72,6 @@ export default function Navbar() {
                                     </Tooltip>
                                 </Link>
                             ))}
-
-                            <ThemeToggle className="hidden sm:block" /> {/* Button for theme toggle */}
                         </nav>
                     </div>
 
@@ -93,7 +91,7 @@ export default function Navbar() {
                     {session?.user && <div className="flex-center gap-4">
                         <Link href={"/account"}>
                             <div className="flex-center gap-2">
-                                {session?.user?.image && <span className="w-[30px] h-[30px]">
+                                {session?.user?.image ? <span className="w-[30px] h-[30px]">
                                     <Image
                                         src={session?.user?.image}
                                         alt="user-image"
@@ -101,8 +99,8 @@ export default function Navbar() {
                                         width={250}
                                         height={250}
                                     />
-                                </span>}
-                                {session?.user?.username && <span>{username}</span>}
+                                </span> : <FaUserCircle className="text-main text-2xl" />}
+                                {session?.user?.username && <span className="hidden md:block">{username}</span>}
                                 <span className="level-badge">{session?.user?.level ?? 1}</span>
                             </div>
                         </Link>
