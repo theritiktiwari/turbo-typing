@@ -122,3 +122,11 @@
 .description-text {
   @apply text-sm text-muted-foreground;
 }
+
+.navbar {
+  @apply px-10 py-3 border-b sticky top-0 bg-background z-50;
+}
+
+.level-badge {
+  @apply bg-primary text-primary-foreground rounded-md h-6 px-[0.4rem] flex-center;
+}
