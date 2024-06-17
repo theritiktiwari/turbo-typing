@@ -156,3 +156,7 @@
 .footer {
   @apply px-10 py-5 border-t bg-secondary text-muted-foreground;
 }
+
+.loader {
+  @apply fixed top-0 left-0 w-screen h-screen bg-background text-main bg-opacity-90 z-50 flex-center;
+}
