@@ -11,8 +11,8 @@ const font = Roboto_Serif({
 
 export const metadata: Metadata = {
   title: {
-    template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Typo Buster"}`,
-    default: `Home | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Typo Buster"}`,
+    template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Turbo Typing"}`,
+    default: `Home | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Turbo Typing"}`,
   },
   description: "A simple web app for typing speed, where you can test your typing speed and improve it.",
 };
