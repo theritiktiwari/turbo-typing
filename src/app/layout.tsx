@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Roboto_Serif } from "next/font/google";
 import "./globals.css";
 
+import { AuthProvider } from "@/providers/auth-provider";
+
 const font = Roboto_Serif({
   weight: ["200", "300", "400", "500", "600", "700", "900"],
   subsets: ["latin"],
@@ -22,7 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={font.className}>{children}</body>
+      <body className={font.className}>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </body>
     </html>
   );
 }
