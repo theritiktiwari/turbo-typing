@@ -11,10 +11,10 @@ const font = Roboto_Serif({
 
 export const metadata: Metadata = {
   title: {
-    template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Speed Typing"}`,
-    default: `Home | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Speed Typing"}`,
+    template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Typo Buster"}`,
+    default: `Home | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Typo Buster"}`,
   },
-  description: "A simple speed typing web app, where you can test your typing speed.",
+  description: "A simple web app for typing speed, where you can test your typing speed and improve it.",
 };
 
 export default function RootLayout({
