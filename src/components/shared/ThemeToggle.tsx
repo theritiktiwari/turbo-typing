@@ -1,14 +1,23 @@
 "use client"
 
-import * as React from "react"
+import { useEffect, useState } from "react"
 import { Monitor, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 export function ThemeToggle({ className }: { className?: string }) {
+    const [mounted, setMounted] = useState(false);
     const { theme, setTheme } = useTheme();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const getActiveClass = (currentTheme: string) => {
         return theme === currentTheme ? 'bg-main text-main-foreground' : ''
+    }
+
+    if (!mounted) {
+        return null; // Avoid rendering until the theme is resolved
     }
 
     return (
