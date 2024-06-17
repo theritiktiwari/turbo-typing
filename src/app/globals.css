@@ -113,6 +113,10 @@
   @apply flex items-center justify-end;
 }
 
+.flex-items-start {
+  @apply flex items-start justify-center;
+}
+
 .link {
   @apply text-main font-semibold;
 }
@@ -142,9 +146,13 @@
 }
 
 .theme-toggle {
-  @apply flex-around gap-1 p-1 rounded-full border cursor-pointer;
+  @apply flex-around gap-1 p-1 rounded-full border border-muted-foreground cursor-pointer;
 }
 
 .theme-toggle-icon {
-  @apply w-8 h-8 flex-center rounded-full border p-[0.4rem];
+  @apply w-8 h-8 flex-center rounded-full border border-muted-foreground p-[0.4rem];
+}
+
+.footer {
+  @apply px-10 py-5 border-t bg-secondary text-muted-foreground;
 }
