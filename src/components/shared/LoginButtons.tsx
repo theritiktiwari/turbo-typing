@@ -11,6 +11,7 @@ export function LoginButtons() {
     return <>
         <div className="flex flex-col gap-2 mt-3">
             <Button
+                variant={"main"}
                 className="flex-center gap-3"
                 onClick={() => signIn('google', {
                     callbackUrl: origin
@@ -21,6 +22,7 @@ export function LoginButtons() {
             </Button>
 
             <Button
+                variant={"main"}
                 className="flex-center gap-3"
                 onClick={() => signIn('github', {
                     callbackUrl: origin
