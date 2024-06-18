@@ -25,7 +25,7 @@ const Page = () => {
                     <div key={index} className="space-y-3">
                         <h2 className='page-subheading'>{term.heading}</h2>
                         {term.content?.map((content, index) => (
-                            Array.isArray(content) ? <ul className='space-y-2'>
+                            Array.isArray(content) ? <ul key={index} className='space-y-2'>
                                 {content.map((subContent, contentIndex) => (
                                     <li className="page-list-item" key={contentIndex}>{subContent}</li>
                                 ))}
