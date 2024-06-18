@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowDownAZ, Gauge, Star } from "lucide-react";
+import { ArrowDownAZ, CaseSensitive, Gauge, Save, Star, Type } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSetting } from "@/hooks/use-setting";
 import { languages } from "@/constants/language";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
     const [isMounted, setIsMounted] = useState(false);
@@ -125,6 +127,26 @@ export default function Page() {
                         >
                             CPS
                         </div>
+                    </div>
+                </div>
+
+                {/* Font Size */}
+                <div className="settings-box mt-5">
+                    <div className="w-full md:w-[50%] space-y-2">
+                        <div className="settings-title">
+                            <Type /> Font Size
+                        </div>
+                        <div className="description-text">
+                            Change the font size of the editor.
+                        </div>
+                    </div>
+                    <div className="flex-center gap-2">
+                        <Input
+                            type="number"
+                            className="w-[180px]"
+                            value={setting.fontSize}
+                            onChange={(e) => setting.updateFontSize(e.target.value)}
+                        />
                     </div>
                 </div>
             </div>

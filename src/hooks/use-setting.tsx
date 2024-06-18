@@ -8,6 +8,8 @@ interface SettingStore {
   updateLanguage: (data: string) => void;
   unit: string;
   updateUnit: (data: string) => void;
+  fontSize: string;
+  updateFontSize: (data: string) => void;
   reset: () => void;
 }
 
@@ -30,6 +32,12 @@ export const useSetting = create(
       const { unit } = get();
       if (unit === data) return;
       set({ unit: data });
+    },
+    fontSize: "12",
+    updateFontSize: (data: string) => {
+      const { fontSize } = get();
+      if (fontSize === data) return;
+      set({ fontSize: data });
     },
     reset: () => set({
       difficulty: "BEGINNER",
