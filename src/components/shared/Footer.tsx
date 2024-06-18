@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { CircleDollarSign, CodeXml, GlobeLock, Mail, NotepadText, ShieldCheck } from "lucide-react";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { Separator } from "@/components/ui/separator";
+import { ContactModal } from "./modals/contact-modal";
 
 export default function Footer() {
+    const [openContactModal, setOpenContactModal] = useState(false);
+
     const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Turbo Typing";
-    const heart = "\uD83D\uDC99";
+    const heart = "\uD83D\uDC99"; // blue heart emoji
 
     const copyright = (year: number) => {
         const currentYear = new Date().getFullYear();
@@ -20,12 +24,13 @@ export default function Footer() {
             <div className="flex justify-between items-start md:items-center">
                 <div className="flex-center gap-5 md:gap-7">
                     <ul className={"text-xs flex-items-start flex-col md:flex-row gap-5 md:gap-7"}>
-                        {/* TODO: Add modal to contact info */}
-                        <Link href={"/"}>
-                            <li className="flex-center gap-1">
-                                <Mail size={"1rem"} /> Contact
-                            </li>
-                        </Link>
+                        <ContactModal
+                            isOpen={openContactModal}
+                            onClose={() => setOpenContactModal(false)}
+                        />
+                        <li className="flex-center gap-1 cursor-pointer" onClick={() => setOpenContactModal(true)}>
+                            <Mail size={"1rem"} /> Contact
+                        </li>
 
                         {/* TODO: Add modal to support links */}
                         <Link href={"/"}>
