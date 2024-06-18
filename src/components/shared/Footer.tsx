@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 
 export default function Footer() {
     const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Turbo Typing";
+    const heart = "\uD83D\uDC99";
 
     const copyright = (year: number) => {
         const currentYear = new Date().getFullYear();
@@ -65,7 +66,7 @@ export default function Footer() {
             <Separator className="my-4 bg-muted-foreground" />
             <div className="text-xs text-center">
                 <p>&copy; {copyright(2024)} {APP_NAME}. All rights reserved.</p>
-                <p>Made with ❤️ by <a href="https://theritiktiwari.vercel.app" target="_blank" rel="noopener noreferrer" className="link">Ritik Tiwari</a>.</p>
+                <p>Made with {heart} by <a href="https://theritiktiwari.vercel.app" target="_blank" rel="noopener noreferrer" className="link">Ritik Tiwari</a>.</p>
             </div>
         </footer>
     );
