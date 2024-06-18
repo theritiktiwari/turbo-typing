@@ -12,12 +12,15 @@ const Logo = () => {
 
     return (
         <div className="flex-center gap-3">
-            <Image
-                src="/images/logo.png"
-                alt="Logo"
-                width={40}
-                height={40}
-            />
+            <div className="w-[40px] h-[40px]">
+                <Image
+                    src="/images/logo.png"
+                    className="drop-shadow-[0_0_5px_rgba(0,0,0,0.3)] dark:drop-shadow-none"
+                    alt="Logo"
+                    width={2000}
+                    height={2000}
+                />
+            </div>
             <h1 className="hidden md:block link text-2xl font-bold">{logo}</h1>
         </div>
     );
