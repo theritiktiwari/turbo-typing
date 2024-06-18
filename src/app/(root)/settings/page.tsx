@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowDownAZ, CaseSensitive, Gauge, RotateCw, Save, Settings2, Star, Type } from "lucide-react";
+import { ArrowDownAZ, CaseSensitive, Gauge, RotateCw, Settings2, Star, Type } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useSetting } from "@/hooks/use-setting";
 import { languages } from "@/constants/language";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { fonts } from "@/constants/fonts";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
-import { fonts } from "@/constants/fonts";
-import { SettingModal } from "@/components/shared/modals/setting-modal";
 import { Toast } from "@/components/ui/toast";
-import { useSession } from "next-auth/react";
+import { SettingModal } from "@/components/shared/modals/setting-modal";
 
 export default function Page() {
     const [isMounted, setIsMounted] = useState(false);
@@ -124,31 +123,28 @@ export default function Page() {
 
                 {/* Set the Language */}
                 <div className="settings-box mt-5">
-                    <div className="w-full md:w-[50%] space-y-2">
-                        <div className="settings-title">
-                            <ArrowDownAZ /> Language
+                    <div className="flex flex-col gap-4 w-full">
+                        <div className="w-full space-y-2">
+                            <div className="settings-title">
+                                <ArrowDownAZ /> Language
+                            </div>
+                            <div className="description-text">
+                                Change the type of language you want.
+                            </div>
                         </div>
-                        <div className="description-text">
-                            Change the type of language you want.
+
+                        <div className="grid grid-cols-2 md:grid-cols-7 gap-3 w-full place-items-stretch">
+                            {languages && Object.keys(languages).map((key) => (
+                                <div
+                                    key={key}
+                                    className={cn("settings-toggle md:w-[180px]", setting.language === key ? "bg-main text-main-foreground" : "bg-secondary")}
+                                    onClick={() => setting.updateLanguage(key)}
+                                >
+                                    {languages[key]}
+                                </div>
+                            ))}
                         </div>
                     </div>
-                    <Select
-                        onValueChange={(value) => setting.updateLanguage(value)}
-                        defaultValue={setting.language}
-                    >
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a language" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                {Object.keys(languages).map((key) => (
-                                    <SelectItem key={key} value={key} className="cursor-pointer">
-                                        {languages[key]}
-                                    </SelectItem>
-                                ))}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
                 </div>
 
                 {/* Typing Unit */}
@@ -224,6 +220,7 @@ export default function Page() {
                         <div className="grid grid-cols-2 md:grid-cols-7 gap-3 w-full place-items-stretch">
                             {fonts?.map((font) => (
                                 <div
+                                    key={font}
                                     className={cn("settings-toggle md:w-[180px]", setting.fontFamily === font ? "bg-main text-main-foreground" : "bg-secondary")}
                                     onClick={() => setting.updateFontFamily(font)}
                                 >
