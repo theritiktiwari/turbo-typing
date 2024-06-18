@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { AuthProvider } from "@/providers/auth-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { ToastProvider } from "@/providers/toast-provider";
 
 const font = Roboto_Serif({
   weight: ["200", "300", "400", "500", "600", "700", "900"],
@@ -32,6 +33,7 @@ export default function RootLayout({
             defaultTheme="system"
             enableSystem
           >
+            <ToastProvider />
             {children}
           </ThemeProvider>
         </AuthProvider>
