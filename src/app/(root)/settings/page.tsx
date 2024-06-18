@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowDownAZ, CaseSensitive, Gauge, Save, Star, Type } from "lucide-react";
+import { ArrowDownAZ, CaseSensitive, Gauge, RotateCw, Save, Settings2, Star, Type } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSetting } from "@/hooks/use-setting";
 import { languages } from "@/constants/language";
@@ -9,10 +9,19 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { fonts } from "@/constants/fonts";
+import { SettingModal } from "@/components/shared/modals/setting-modal";
+import { Toast } from "@/components/ui/toast";
+import { useSession } from "next-auth/react";
 
 export default function Page() {
     const [isMounted, setIsMounted] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [modalType, setModalType] = useState("");
+    const [modalValues, setModalValues] = useState("");
+
     const setting = useSetting();
+    const { data: session } = useSession();
 
     useEffect(() => {
         setIsMounted(true);
@@ -22,8 +31,57 @@ export default function Page() {
         return null;
     }
 
+    const exportSettings = () => {
+        const settings = setting.export();
+        // copy to clipboard
+        navigator.clipboard.writeText(JSON.stringify(settings, null, 2));
+        Toast({ success: true, message: "Settings copied to clipboard." });
+    }
+
+    const handleSubmit = () => {
+        try {
+            setLoading(true);
+            if (modalType === "IMPORT_SETTINGS") {
+                if (!modalValues) {
+                    return Toast({ success: false, message: "Please enter the JSON settings." });
+                }
+
+                setting.import(modalValues);
+                setOpen(false);
+                setModalValues("");
+                setModalType("");
+            }
+
+            if (modalType === "USERNAME") {
+                if (!modalValues) {
+                    return Toast({ success: false, message: "Please enter the JSON settings." });
+                }
+
+                // TODO: Update the username in database
+
+                setOpen(false);
+                setModalValues("");
+                setModalType("");
+            }
+        } catch (error) {
+            console.error(error); // FIXME: remove this line
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <>
+            <SettingModal
+                isOpen={open}
+                onClose={() => setOpen(false)}
+                onConfirm={handleSubmit}
+                loading={loading}
+                type={modalType}
+                data={modalValues}
+                setData={setModalValues}
+            />
+
             <div className="main-container">
                 <p className="description-text text-center mb-6">
                     Configure your Turbo Typing experience.
@@ -176,6 +234,81 @@ export default function Page() {
                     </div>
 
                 </div>
+
+                {/* Import/Export Setings */}
+                <div className="settings-box mt-5">
+                    <div className="w-full md:w-[50%] space-y-2">
+                        <div className="settings-title">
+                            <Settings2 /> Import or Export
+                        </div>
+                        <div className="description-text">
+                            Import or export the settings as JSON.
+                        </div>
+                    </div>
+                    <div className="flex-center gap-2">
+                        <Button
+                            onClick={() => {
+                                setModalType("IMPORT_SETTINGS");
+                                setOpen(true);
+                            }}
+                            variant={"secondary"}
+                        >
+                            Import
+                        </Button>
+                        <Button
+                            onClick={exportSettings}
+                            variant={"secondary"}
+                        >
+                            Export
+                        </Button>
+                    </div>
+                </div>
+
+                {/* Update username */}
+                <div className="settings-box mt-5">
+                    <div className="w-full md:w-[50%] space-y-2">
+                        <div className="settings-title">
+                            <Settings2 /> Update Username
+                        </div>
+                        <div className="description-text">
+                            You can only change the username once in every 30 days.
+                        </div>
+                    </div>
+                    <div className="flex-center gap-2">
+                        <Button
+                            onClick={() => {
+                                setModalType("USERNAME");
+                                setModalValues(session?.user?.username ?? "");
+                                setOpen(true);
+                            }}
+                            variant={"destructive"}
+                        >
+                            Update Username
+                        </Button>
+                    </div>
+                </div>
+
+                {/* Reset all Settings */}
+                <div className="settings-box mt-5">
+                    <div className="w-full md:w-[50%] space-y-2">
+                        <div className="settings-title">
+                            <RotateCw /> Reset Settings
+                        </div>
+                        <div className="description-text flex flex-col gap-1">
+                            Resets settings to the default.
+                            <span className="text-destructive font-medium">You can&apos;t undo this action!</span>
+                        </div>
+                    </div>
+                    <div className="flex-center gap-2">
+                        <Button
+                            onClick={() => setting.reset()}
+                            variant={"destructive"}
+                        >
+                            Reset Settings
+                        </Button>
+                    </div>
+                </div>
+
             </div>
         </>
     );

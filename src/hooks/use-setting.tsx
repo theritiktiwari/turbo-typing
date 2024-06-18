@@ -1,3 +1,4 @@
+import { Toast } from '@/components/ui/toast';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -12,6 +13,8 @@ interface SettingStore {
   updateFontSize: (data: string) => void;
   fontFamily: string;
   updateFontFamily: (data: string) => void;
+  import: (data: string) => void;
+  export: () => void;
   reset: () => void;
 }
 
@@ -22,36 +25,64 @@ export const useSetting = create(
       const { difficulty } = get();
       if (difficulty === data) return;
       set({ difficulty: data });
+      Toast({ success: true, message: "Difficulty level updated." })
     },
     language: "ENGLISH",
     updateLanguage: (data: string) => {
       const { language } = get();
       if (language === data) return;
       set({ language: data });
+      Toast({ success: true, message: "Language updated." })
     },
     unit: "WPM",
     updateUnit: (data: string) => {
       const { unit } = get();
       if (unit === data) return;
       set({ unit: data });
+      Toast({ success: true, message: "Unit updated." })
     },
     fontSize: "12",
     updateFontSize: (data: string) => {
       const { fontSize } = get();
       if (fontSize === data) return;
       set({ fontSize: data });
+      Toast({ success: true, message: "Font size updated." })
     },
     fontFamily: "Source Code Pro",
     updateFontFamily: (data: string) => {
       const { fontFamily } = get();
       if (fontFamily === data) return;
       set({ fontFamily: data });
+      Toast({ success: true, message: "Font family updated." })
     },
-    reset: () => set({
-      difficulty: "BEGINNER",
-      language: "ENGLISH",
-      unit: "WPM",
-    }),
+    import: (data: string) => {
+      try {
+        const details = JSON.parse(data);
+
+        if (!details.difficulty || !details.language || !details.unit || !details.fontSize || !details.fontFamily) {
+          return Toast({ success: false, message: "Invalid settings data." })
+        }
+
+        set(details);
+        Toast({ success: true, message: "Settings imported." })
+      } catch (error) {
+        Toast({ success: false, message: "Invalid settings data." })
+      }
+    },
+    export: () => {
+      const details = get();
+      return details;
+    },
+    reset: () => {
+      set({
+        difficulty: "BEGINNER",
+        language: "ENGLISH",
+        unit: "WPM",
+        fontSize: "12",
+        fontFamily: "Source Code Pro",
+      });
+      Toast({ success: true, message: "Settings reset to default." })
+    },
   }), {
     name: 'setting-storage',
     storage: createJSONStorage(() => localStorage)
