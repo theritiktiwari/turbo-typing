@@ -176,3 +176,15 @@
 .page-list-item {
   @apply ml-3.5 md:ml-5 pl-2 md:pl-0 list-outside list-disc;
 }
+
+.settings-box {
+  @apply w-full flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-justify;
+}
+
+.settings-title {
+  @apply flex gap-2 font-medium;
+}
+
+.settings-toggle {
+  @apply h-10 px-3 cursor-pointer flex-center rounded-md text-sm font-medium transition-colors;
+}
