@@ -2,22 +2,31 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from "zustand/middleware";
 
 interface SettingStore {
-  difficulty: string | null;
+  difficulty: string;
   updateDifficulty: (data: string) => void;
-  removeDifficulty: () => void;
-  removeAll: () => void;
+  language: string;
+  updateLanguage: (data: string) => void;
+  reset: () => void;
 }
 
 export const useSetting = create(
   persist<SettingStore>((set, get) => ({
-    difficulty: null,
+    difficulty: "BEGINNER",
     updateDifficulty: (data: string) => {
-      const diff = get().difficulty;
-      if (diff === data) return;
+      const { difficulty } = get();
+      if (difficulty === data) return;
       set({ difficulty: data });
     },
-    removeDifficulty: () => set({ difficulty: null }),
-    removeAll: () => set({ difficulty: null }),
+    language: "ENGLISH",
+    updateLanguage: (data: string) => {
+      const { language } = get();
+      if (language === data) return;
+      set({ language: data });
+    },
+    reset: () => set({
+      difficulty: "BEGINNER",
+      language: "ENGLISH"
+    }),
   }), {
     name: 'setting-storage',
     storage: createJSONStorage(() => localStorage)

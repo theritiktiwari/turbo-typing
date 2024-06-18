@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Star } from "lucide-react";
+import { ArrowDownAZ, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSetting } from "@/hooks/use-setting";
+import { languages } from "@/constants/language";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const difficultyLevels = {
-    beginner: "beginner",
-    intermediate: "intermediate",
-    expert: "expert",
+    beginner: "BEGINNER",
+    intermediate: "INTERMEDIATE",
+    expert: "EXPERT",
 }
 
 export default function Page() {
@@ -63,6 +65,35 @@ export default function Page() {
                             Expert
                         </div>
                     </div>
+                </div>
+
+                {/* Set the Language */}
+                <div className="settings-box mt-5">
+                    <div className="w-full md:w-[50%] space-y-2">
+                        <div className="settings-title">
+                            <ArrowDownAZ /> Language
+                        </div>
+                        <div className="description-text">
+                            Change the type of language you want.
+                        </div>
+                    </div>
+                    <Select
+                        onValueChange={(value) => setting.updateLanguage(value)}
+                        defaultValue={setting.language}
+                    >
+                        <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select a language" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                {Object.keys(languages).map((key) => (
+                                    <SelectItem key={key} value={key} className="cursor-pointer">
+                                        {languages[key]}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
         </>
