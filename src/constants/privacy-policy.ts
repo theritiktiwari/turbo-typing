@@ -76,7 +76,7 @@ export const privacyPolicy = [
         ]
     },
     {
-        heading: "Questions and Contact Information",
+        heading: "Section 9: Questions and Contact Information",
         content: [
             `If you would like to: access, correct, amend or delete any personal information we have about you, register a complaint, or simply want more information contact us at ${SUPPORT_EMAIL}.`
         ]
