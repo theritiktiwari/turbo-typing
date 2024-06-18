@@ -8,6 +8,7 @@ import { languages } from "@/constants/language";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
+import { fonts } from "@/constants/fonts";
 
 export default function Page() {
     const [isMounted, setIsMounted] = useState(false);
@@ -148,6 +149,32 @@ export default function Page() {
                             onChange={(e) => setting.updateFontSize(e.target.value)}
                         />
                     </div>
+                </div>
+
+                {/* Font Family */}
+                <div className="settings-box mt-5">
+                    <div className="flex flex-col gap-4 w-full">
+                        <div className="w-full space-y-2">
+                            <div className="settings-title">
+                                <CaseSensitive /> Font Family
+                            </div>
+                            <div className="description-text">
+                                Select the font family for the editor.
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-7 gap-3 w-full place-items-stretch">
+                            {fonts?.map((font) => (
+                                <div
+                                    className={cn("settings-toggle md:w-[180px]", setting.fontFamily === font ? "bg-main text-main-foreground" : "bg-secondary")}
+                                    onClick={() => setting.updateFontFamily(font)}
+                                >
+                                    {font}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </>

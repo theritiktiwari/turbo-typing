@@ -10,6 +10,8 @@ interface SettingStore {
   updateUnit: (data: string) => void;
   fontSize: string;
   updateFontSize: (data: string) => void;
+  fontFamily: string;
+  updateFontFamily: (data: string) => void;
   reset: () => void;
 }
 
@@ -38,6 +40,12 @@ export const useSetting = create(
       const { fontSize } = get();
       if (fontSize === data) return;
       set({ fontSize: data });
+    },
+    fontFamily: "Source Code Pro",
+    updateFontFamily: (data: string) => {
+      const { fontFamily } = get();
+      if (fontFamily === data) return;
+      set({ fontFamily: data });
     },
     reset: () => set({
       difficulty: "BEGINNER",

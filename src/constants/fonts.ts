@@ -1,0 +1,15 @@
+export const fonts = [
+    "Fira Code",
+    "Inter",
+    "Kanit",
+    "Lato",
+    "Montserrat",
+    "Nunito",
+    "Open Sans",
+    "Oswald",
+    "Poppins",
+    "Raleway",
+    "Roboto",
+    "Source Code Pro",
+    "Ubuntu",
+]
