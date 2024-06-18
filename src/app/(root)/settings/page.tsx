@@ -7,12 +7,6 @@ import { useSetting } from "@/hooks/use-setting";
 import { languages } from "@/constants/language";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-const difficultyLevels = {
-    beginner: "BEGINNER",
-    intermediate: "INTERMEDIATE",
-    expert: "EXPERT",
-}
-
 export default function Page() {
     const [isMounted, setIsMounted] = useState(false);
     const setting = useSetting();
@@ -45,22 +39,22 @@ export default function Page() {
                     <div className="flex gap-2">
                         <div
                             aria-label="beginner"
-                            className={cn("settings-toggle", setting.difficulty === difficultyLevels.beginner ? "bg-main text-main-foreground" : "bg-secondary")}
-                            onClick={() => setting.updateDifficulty(difficultyLevels.beginner)}
+                            className={cn("settings-toggle", setting.difficulty === "BEGINNER" ? "bg-main text-main-foreground" : "bg-secondary")}
+                            onClick={() => setting.updateDifficulty("BEGINNER")}
                         >
                             Beginner
                         </div>
                         <div
                             aria-label="intermediate"
-                            className={cn("settings-toggle", setting.difficulty === difficultyLevels.intermediate ? "bg-main text-main-foreground" : "bg-secondary")}
-                            onClick={() => setting.updateDifficulty(difficultyLevels.intermediate)}
+                            className={cn("settings-toggle", setting.difficulty === "INTERMEDIATE" ? "bg-main text-main-foreground" : "bg-secondary")}
+                            onClick={() => setting.updateDifficulty("INTERMEDIATE")}
                         >
                             Intermediate
                         </div>
                         <div
                             aria-label="expert"
-                            className={cn("settings-toggle", setting.difficulty === difficultyLevels.expert ? "bg-main text-main-foreground" : "bg-secondary")}
-                            onClick={() => setting.updateDifficulty(difficultyLevels.expert)}
+                            className={cn("settings-toggle", setting.difficulty === "EXPERT" ? "bg-main text-main-foreground" : "bg-secondary")}
+                            onClick={() => setting.updateDifficulty("EXPERT")}
                         >
                             Expert
                         </div>
