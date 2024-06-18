@@ -59,9 +59,6 @@ export const SettingModal: React.FC<SettingModalProps> = ({
       <div className="grid gap-4 py-4">
 
         {type === "USERNAME" && <div className="flex-between gap-4">
-          {/* <Label htmlFor="firstName" className="min-w-[100px]">
-              First Name
-            </Label> */}
           <Input
             id="username"
             defaultValue={data}
@@ -71,12 +68,8 @@ export const SettingModal: React.FC<SettingModalProps> = ({
         </div>}
 
         {type === "IMPORT_SETTINGS" && <div className="flex-between gap-4">
-          {/* <Label htmlFor="phone" className="min-w-[120px]">
-              Mobile Number
-            </Label> */}
           <Input
             id="import-settings"
-            defaultValue={data ?? ""}
             className="col-span-3"
             onChange={(e) => setData(e.target.value)}
           />
