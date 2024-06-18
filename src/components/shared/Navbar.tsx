@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { Info, Keyboard, LogOut, Settings, UserRound } from "lucide-react";
 import { FaUserCircle } from "react-icons/fa";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Loader } from "@/components/ui/loader";
 
 const Logo = () => {
     const logo = process.env.NEXT_PUBLIC_APP_NAME ?? "Speed Typing";
@@ -27,7 +29,16 @@ const Logo = () => {
 }
 
 export default function Navbar() {
+    const [mounted, setMounted] = useState(false);
     const { data: session } = useSession();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return <Loader />;
+    }
 
     const username = session?.user?.username?.length > 15 ? `${session?.user?.username?.slice(0, 15)}...` : session?.user?.username;
 

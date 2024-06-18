@@ -1,14 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CircleDollarSign, CodeXml, GlobeLock, Mail, NotepadText, ShieldCheck } from "lucide-react";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { Separator } from "@/components/ui/separator";
 import { ContactModal } from "./modals/contact-modal";
 
 export default function Footer() {
+    const [mounted, setMounted] = useState(false);
     const [openContactModal, setOpenContactModal] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return null;
+    }
 
     const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Turbo Typing";
     const heart = "\uD83D\uDC99"; // blue heart emoji
