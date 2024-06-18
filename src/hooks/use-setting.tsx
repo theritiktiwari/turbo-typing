@@ -6,6 +6,8 @@ interface SettingStore {
   updateDifficulty: (data: string) => void;
   language: string;
   updateLanguage: (data: string) => void;
+  unit: string;
+  updateUnit: (data: string) => void;
   reset: () => void;
 }
 
@@ -23,9 +25,16 @@ export const useSetting = create(
       if (language === data) return;
       set({ language: data });
     },
+    unit: "WPM",
+    updateUnit: (data: string) => {
+      const { unit } = get();
+      if (unit === data) return;
+      set({ unit: data });
+    },
     reset: () => set({
       difficulty: "BEGINNER",
-      language: "ENGLISH"
+      language: "ENGLISH",
+      unit: "WPM",
     }),
   }), {
     name: 'setting-storage',
