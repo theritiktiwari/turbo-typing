@@ -25,35 +25,30 @@ export const useSetting = create(
       const { difficulty } = get();
       if (difficulty === data) return;
       set({ difficulty: data });
-      Toast({ success: true, message: "Difficulty level updated." })
     },
     language: "ENGLISH",
     updateLanguage: (data: string) => {
       const { language } = get();
       if (language === data) return;
       set({ language: data });
-      Toast({ success: true, message: "Language updated." })
     },
     unit: "WPM",
     updateUnit: (data: string) => {
       const { unit } = get();
       if (unit === data) return;
       set({ unit: data });
-      Toast({ success: true, message: "Unit updated." })
     },
     fontSize: "12",
     updateFontSize: (data: string) => {
       const { fontSize } = get();
       if (fontSize === data) return;
       set({ fontSize: data });
-      Toast({ success: true, message: "Font size updated." })
     },
     fontFamily: "Source Code Pro",
     updateFontFamily: (data: string) => {
       const { fontFamily } = get();
       if (fontFamily === data) return;
       set({ fontFamily: data });
-      Toast({ success: true, message: "Font family updated." })
     },
     import: (data: string) => {
       try {
