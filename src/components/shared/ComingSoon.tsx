@@ -83,7 +83,7 @@ export default function ComingSoon() {
 
     return (
         <div className="h-screen flex-center px-4 bg-gradient-to-tr from-sky-100 via-pink-200 to-blue-300">
-            <div className="border mx-auto shadow-lg rounded-lg overflow-hidden bg-background">
+            <div className="md:w-[40%] border mx-auto shadow-lg rounded-lg overflow-hidden bg-background">
                 <div className="p-4 md:p-7">
                     <h2 className="md:max-w-screen-lg text-4xl md:text-5xl font-bold">Launching Soon</h2>
                     <p className="mt-2 text-md text-muted-foreground">
