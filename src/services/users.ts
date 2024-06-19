@@ -1,6 +1,8 @@
+"use server";
+
 import UserModel from "@/models/User";
 import { Response } from "@/types/response";
-import { getSession } from "next-auth/react";
+import { serverSession } from "@/helper/serverSession";
 
 interface UpdateUserPayload {
     id: string;
@@ -9,184 +11,222 @@ interface UpdateUserPayload {
     role?: string;
 }
 
-export class UserService {
-    private static AdminCheck(context: any) {
-        if (!context?.session || context?.session?.user?.role !== "ADMIN") {
-            return new Response("Unauthorized Access.").error();
-        }
+export async function AdminCheck(session: any) {
+    if (!session || session?.user?.role !== "ADMIN") {
+        return new Response("Unauthorized Access.").error();
+    }
+}
+
+function UserVaildationCheck(payload: any) {
+    if (payload?.username && payload?.username?.length < 3 || payload?.username?.length > 20) {
+        return new Response("Username must be between 3 and 20 characters.").error();
     }
 
-    private static userVaildationCheck(payload: any) {
-        if (payload?.username && payload?.username?.length < 3 && payload?.username?.length > 20) {
-            return new Response("username must be between 3 to 20 characters long.").error();
-        }
-
-        if (payload?.email && !/^\S+@\S+\.\S+$/.test(payload?.email)) {
-            return new Response("Invalid email address.").error();
-        }
-
-        if (payload?.role && !["USER", "ADMIN"].includes(payload?.role)) {
-            return new Response("Invalid role.").error();
-        }
+    if (payload?.username && !/^[a-zA-Z0-9_]*$/.test(payload?.username)) {
+        return new Response("No special characters allowed in username.").error();
     }
 
-    public static async getUserByEmail(email: string) {
-        return await UserModel.findOne({ email });
+    if (payload?.email && !/^\S+@\S+\.\S+$/.test(payload?.email)) {
+        return new Response("Invalid email address.").error();
     }
 
-    public static async authenticateUser(context: any) {
-        try {
-            const cookies = context.headers.get("cookie") || "";
-            const session = await getSession({ req: { headers: { cookie: cookies } } });
-
-            if (!session) {
-                return null;
-            }
-
-            return session;
-        } catch (error) {
-            console.error("[AUTHENTICATE_USER]", error);
-        }
+    if (payload?.role && !["USER", "ADMIN"].includes(payload?.role)) {
+        return new Response("Invalid role.").error();
     }
+}
 
-    public static async createUser(payload: { email: string }) {
-        try {
-            const { email } = payload;
+function CheckTheDate(pastDate: Date): boolean {
+    const currentDate = new Date();
+    const thirtyDaysInMillis = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+    return (currentDate.getTime() - pastDate.getTime()) >= thirtyDaysInMillis;
+};
 
-            if (!email) {
-                return false;
-            }
+export async function GetUserByEmail(email: string) {
+    return await UserModel.findOne({ email });
+}
 
-            const username = email.split("@")[0];
+export async function AddUser(payload: { email: string }) {
+    try {
+        const { email } = payload;
 
-            const existingUser = await UserService.getUserByEmail(email);
-            if (existingUser) {
-                return true;
-            }
-
-            const newUser = new UserModel({
-                username,
-                email,
-                role: "USER",
-            });
-
-            await newUser.save();
-
-            return true;
-        } catch (error) {
-            console.error("[NEXT_AUTH_OAUTH_SIGN_IN]", error);
+        if (!email) {
             return false;
         }
-    }
 
-    public static async getCurrentUser(context: any) {
-        try {
-            if (!context?.session) {
-                return new Response("Unauthorized Access.").error();
-            }
+        const username = email.split("@")[0];
 
-            const user = await UserService.getUserByEmail(context.session.user.email);
-            if (!user) {
-                return new Response("User not found.").error();
-            }
+        // remove the white spaces and special characters
+        const formattedUsername = username.replace(/\s/g, "").replace(/[^a-zA-Z0-9_]/g, "").toLowerCase();
 
-            return new Response("User found.", user).data();
-        } catch (error) {
-            console.error("[GET_CURRENT_USER]", error);
+        const existingUser = await GetUserByEmail(email);
+        if (existingUser) {
+            return true;
         }
+
+        const newUser = new UserModel({
+            username: formattedUsername,
+            email,
+            role: "USER",
+        });
+
+        await newUser.save();
+
+        return true;
+    } catch (error) {
+        console.error("[NEXT_AUTH_OAUTH_SIGN_IN]", error);
+        return false;
     }
+}
 
-    public static async getUser(payload: { id: string }, context: any) {
-        try {
-            const unauthorize = UserService.AdminCheck(context);
-            if (unauthorize) return unauthorize;
-
-            const user = await UserModel.findById({ _id: payload.id });
-            if (!user) {
-                return new Response("User not found.").error();
-            }
-
-            return new Response("User found.", user).data();
-        } catch (error) {
-            console.error("[GET_USER]", error);
+export async function GetCurrentUser() {
+    try {
+        const session = await serverSession();
+        if (!session) {
+            return new Response("Unauthorized Access.").error();
         }
-    }
 
-    public static async getUsers(context: any) {
-        try {
-            const unauthorize = UserService.AdminCheck(context);
-            if (unauthorize) return unauthorize;
-
-            const users = await UserModel.find();
-            if (!users) {
-                return new Response("Users not found.").error();
-            }
-
-            return new Response("Users found.", users).data();
-        } catch (error) {
-            console.error("[GET_ALL_USERS]", error);
+        const user = await GetUserByEmail(session?.user?.email);
+        if (!user) {
+            return new Response("User not found.").error();
         }
+
+        return new Response("User found.", user).data();
+    } catch (error) {
+        console.error("[GET_CURRENT_USER]", error);
     }
+}
 
-    public static async updateUser(payload: UpdateUserPayload, context: any) {
-        try {
-            if (!context?.session) {
-                return new Response("Unauthorized Access.").error();
-            }
+export async function UpdateUser(payload: UpdateUserPayload) {
+    try {
+        const session = await serverSession();
+        if (!session) {
+            return new Response("Unauthorized Access.").error();
+        }
 
-            if (Object.keys(payload).length === 1 && payload?.id) {
-                return new Response("Nothing to update.").error();
-            }
+        if (Object.keys(payload).length === 1 && payload?.id) {
+            return new Response("Nothing to update.").error();
+        }
 
-            const validation = UserService.userVaildationCheck(payload);
-            if (validation) return validation;
+        const validation = UserVaildationCheck(payload);
+        if (validation) return validation;
 
-            const user = await UserModel.findById(payload.id);
-            if (!user) {
-                return new Response("User not found.").error();
-            }
+        const user = await UserModel.findById(payload.id);
+        if (!user) {
+            return new Response("User not found.").error();
+        }
 
-            if (context.session.user.role === "ADMIN") {
-                user.username = payload.username ?? user.username;
-                user.email = payload.email ?? user.email;
-                user.role = payload.role ?? user.role;
-            }
+        // remove white spaces and convert to lowercase
+        payload.username = payload.username?.replace(/\s/g, "").toLowerCase();
 
-            if (context.session.user.role === "USER" && context.session.user._id !== payload.id) {
-                if (user?.usernameChangeDate) {
-                    const changeDate = new Date(user?.usernameChangeDate);
-                    if (changeDate.getDate() + 30 > new Date().getDate()) {
-                        return new Response("You can change your username only once in 30 days.").error();
-                    }
+        if (session?.user?.role === "ADMIN") {
+            user.username = payload.username ?? user.username;
+            user.email = payload.email ?? user.email;
+            user.role = payload.role ?? user.role;
+        }
+
+        if (session?.user?.role === "USER" && session?.user?._id === payload.id) {
+            if (user?.usernameChangeDate) {
+                const changeDate = new Date(user?.usernameChangeDate);
+                if (!CheckTheDate(changeDate)) {
+                    return new Response("You can change your username only once in 30 days.").error();
                 }
-                user.username = payload?.username ?? user.username;
             }
 
-            await user.save();
-
-            return new Response("User updated successfully.").success();
-        } catch (error) {
-            console.error("[UPDATE_USER]", error);
+            user.username = payload?.username ?? user.username;
+            user.usernameChangeDate = new Date();
         }
+
+        await user.save();
+
+        return new Response("User updated successfully.").success();
+    } catch (error) {
+        console.error("[UPDATE_USER]", error);
+        return new Response("Something went wrong.").error();
     }
+}
 
-    public static async deleteUser(payload: { id: string }, context: any) {
-        try {
-            const unauthorize = UserService.AdminCheck(context);
-            if (unauthorize) return unauthorize;
+export async function GetUser(payload: { id: string }) {
+    try {
+        const session = await serverSession();
+        const unauthorize = AdminCheck(session);
+        if (unauthorize) return unauthorize;
 
-            if (context.session.user._id === payload.id) {
-                return new Response("You can not delete your own account.").error();
-            }
-
-            const user = await UserModel.findByIdAndDelete(payload.id);
-            if (!user) {
-                return new Response("User not found.").error();
-            }
-
-            return new Response("User deleted successfully.").success();
-        } catch (error) {
-            console.error("[DELETE_USER]", error);
+        const user = await UserModel.findById({ _id: payload.id });
+        if (!user) {
+            return new Response("User not found.").error();
         }
+
+        return new Response("User found.", user).data();
+    } catch (error) {
+        console.error("[GET_USER]", error);
+    }
+}
+
+export async function GetUsers() {
+    try {
+        const session = await serverSession();
+        const unauthorize = AdminCheck(session);
+        if (unauthorize) return unauthorize;
+
+        const users = await UserModel.find();
+        if (!users) {
+            return new Response("Users not found.").error();
+        }
+
+        return new Response("Users found.", users).data();
+    } catch (error) {
+        console.error("[GET_ALL_USERS]", error);
+    }
+}
+
+export async function DeleteUser(payload: { id: string }) {
+    try {
+        const session = await serverSession();
+        const unauthorize = AdminCheck(session);
+        if (unauthorize) return unauthorize;
+
+        if (session?.user?._id === payload.id) {
+            return new Response("You can not delete your own account.").error();
+        }
+
+        const user = await UserModel.findByIdAndDelete(payload.id);
+        if (!user) {
+            return new Response("User not found.").error();
+        }
+
+        return new Response("User deleted successfully.").success();
+    } catch (error) {
+        console.error("[DELETE_USER]", error);
+    }
+}
+
+export async function CheckUsername(payload: { username: string, id: string }) {
+    try {
+        const session = await serverSession();
+        if (!session) {
+            return new Response("Unauthorized Access.").error();
+        }
+
+        const validation = UserVaildationCheck(payload);
+        if (validation) return validation;
+
+        const currentUser = await UserModel.findById(payload.id);
+
+        if (currentUser?.usernameChangeDate) {
+            const changeDate = new Date(currentUser?.usernameChangeDate);
+            if (!CheckTheDate(changeDate)) {
+                return new Response("You can change your username only once in 30 days.").error();
+            }
+        }
+
+        const existingUser = await UserModel.findOne({ username: payload.username });
+        if (existingUser) {
+            return new Response("Username is not available.").error();
+        }
+
+        return new Response("Username is available.").success();
+    } catch (error) {
+        console.error("[CHECK_USERNAME]", error);
+        return new Response("Something went wrong.").error();
     }
 }
