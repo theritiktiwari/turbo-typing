@@ -15,6 +15,9 @@ interface SettingModalProps {
   type: string;
   data: string;
   setData: React.Dispatch<React.SetStateAction<string>>;
+  usernameError: string | null;
+  usernameDescription: string | null;
+  handleUsernameChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const SettingModal: React.FC<SettingModalProps> = ({
@@ -25,6 +28,9 @@ export const SettingModal: React.FC<SettingModalProps> = ({
   type,
   data,
   setData,
+  usernameError,
+  usernameDescription,
+  handleUsernameChange,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -49,6 +55,13 @@ export const SettingModal: React.FC<SettingModalProps> = ({
     action = "Save Username";
   }
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // regex with alphanumeric characters and underscore only to validate username
+    if (!/^[a-zA-Z0-9_]*$/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <Modal
       title={title ?? ""}
@@ -58,13 +71,16 @@ export const SettingModal: React.FC<SettingModalProps> = ({
     >
       <div className="grid gap-4 py-4">
 
-        {type === "USERNAME" && <div className="flex-between gap-4">
+        {type === "USERNAME" && <div className="flex flex-col gap-2">
           <Input
             id="username"
             defaultValue={data}
             className="col-span-3"
-            onChange={(e) => setData(e.target.value)}
+            onChange={handleUsernameChange}
+            onKeyDown={handleKeyPress}
           />
+          {usernameDescription && <p className="text-sm text-success">{usernameDescription}</p>}
+          {usernameError && <p className="text-sm text-destructive">{usernameError}</p>}
         </div>}
 
         {type === "IMPORT_SETTINGS" && <div className="flex-between gap-4">

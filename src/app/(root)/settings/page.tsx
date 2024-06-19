@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useSetting } from "@/hooks/use-setting";
 import { languages } from "@/constants/language";
 import { fonts } from "@/constants/fonts";
+import { CheckUsername, UpdateUser } from "@/services/users";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/components/ui/toast";
@@ -18,9 +19,12 @@ export default function Page() {
     const [loading, setLoading] = useState(false);
     const [modalType, setModalType] = useState("");
     const [modalValues, setModalValues] = useState("");
+    const [usernameError, setUsernameError] = useState<string | null>(null);
+    const [usernameDescription, setUsernameDescription] = useState<string | null>(null);
+    const [debounceTimer, setDebounceTimer] = useState<NodeJS.Timeout | null>(null);
 
     const setting = useSetting();
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
 
     useEffect(() => {
         setIsMounted(true);
@@ -37,7 +41,7 @@ export default function Page() {
         Toast({ success: true, message: "Settings copied to clipboard." });
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         try {
             setLoading(true);
             if (modalType === "IMPORT_SETTINGS") {
@@ -56,29 +60,85 @@ export default function Page() {
                     return Toast({ success: false, message: "Please enter the JSON settings." });
                 }
 
-                // TODO: Update the username in database
+                const response = await UpdateUser({ id: session?.user?._id, username: modalValues });
+                Toast(response);
+                if (response.success) {
+                    update({ username: modalValues });
+                }
 
                 setOpen(false);
                 setModalValues("");
                 setModalType("");
+                setUsernameError(null);
+                setUsernameDescription(null);
             }
         } catch (error) {
-            console.error(error); // FIXME: remove this line
+            Toast({ success: false, message: "Something went wrong." });
         } finally {
             setLoading(false);
         }
+    }
+
+    const checkUsernameValidity = async (username: string) => {
+        if (username.length >= 3 && username.length <= 20) {
+            try {
+                const response = await CheckUsername({ username, id: session?.user?._id });
+                if (response.success) {
+                    setUsernameDescription("Username is available.");
+                } else {
+                    setUsernameError(response?.message);
+                }
+            } catch (error) {
+                Toast({ success: false, message: "Something went wrong." });
+            }
+        }
+    };
+
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUsernameError(null);
+        setUsernameDescription(null);
+
+        const value = e.target.value.replace(/\s/g, "").toLowerCase();
+        setModalValues(value);
+
+        if (value.length < 3 || value.length > 20) {
+            setUsernameError("Username must be between 3 and 20 characters.");
+        } else {
+            setUsernameError(null);
+        }
+
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+
+        setDebounceTimer(
+            setTimeout(() => {
+                checkUsernameValidity(value);
+            }, 1000)
+        );
+    };
+
+    const clearValues = () => {
+        setOpen(false);
+        setModalValues("");
+        setModalType("");
+        setUsernameError(null);
+        setUsernameDescription(null);
     }
 
     return (
         <>
             <SettingModal
                 isOpen={open}
-                onClose={() => setOpen(false)}
+                onClose={clearValues}
                 onConfirm={handleSubmit}
                 loading={loading}
                 type={modalType}
                 data={modalValues}
                 setData={setModalValues}
+                usernameError={usernameError}
+                usernameDescription={usernameDescription}
+                handleUsernameChange={handleUsernameChange}
             />
 
             <div className="main-container">
@@ -262,7 +322,7 @@ export default function Page() {
                 </div>
 
                 {/* Update username */}
-                <div className="settings-box mt-5">
+                {session?.user && <div className="settings-box mt-5">
                     <div className="w-full md:w-[50%] space-y-2">
                         <div className="settings-title">
                             <Settings2 /> Update Username
@@ -283,7 +343,7 @@ export default function Page() {
                             Update Username
                         </Button>
                     </div>
-                </div>
+                </div>}
 
                 {/* Reset all Settings */}
                 <div className="settings-box mt-5">
@@ -305,7 +365,6 @@ export default function Page() {
                         </Button>
                     </div>
                 </div>
-
             </div>
         </>
     );
