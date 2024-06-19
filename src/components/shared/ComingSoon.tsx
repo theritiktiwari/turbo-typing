@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import { addMember } from "@/services/members";
 import { memberSchema } from "@/schemas/members";
 import { Toast } from "@/components/ui/toast";
 import { Input } from "@/components/ui/input";
@@ -71,8 +71,8 @@ export default function ComingSoon() {
     const onSubmit = async (input: z.infer<typeof memberSchema>) => {
         try {
             setLoading(true);
-            const response = await axios.post("/api/members", input);
-            Toast(response.data);
+            const response = await addMember({ email: input.email });
+            Toast(response);
         } catch (error: any) {
             Toast({ success: false, message: error?.message || "Something went wrong." });
         } finally {
