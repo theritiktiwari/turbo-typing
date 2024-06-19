@@ -1,5 +1,8 @@
 import { Document, Schema } from 'mongoose';
 
+export interface IMember extends Document {
+    email: string;
+}
 export interface IUser extends Document {
     username: string;
     usernameChangeDate?: Date;
