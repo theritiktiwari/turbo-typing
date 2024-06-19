@@ -3,7 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 
 import dbConnect from "@/lib/db";
-import { UserService } from "@/services/users"
+import { AddUser, GetUserByEmail } from "@/services/users";
 
 const tokenValue = (token: any, user: any) => {
     token._id = user._id?.toString();
@@ -27,11 +27,17 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async signIn({ user }: { user: any }) {
             await dbConnect();
-            return await UserService.createUser(user);
+            return await AddUser(user);
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
+            if (trigger === "update") {
+                token.username = session?.username ?? token.username;
+                token.role = session?.role ?? token.role;
+                token.level = session?.level ?? token.level;
+            }
+
             await dbConnect();
-            const dbUser = await UserService.getUserByEmail(user?.email as string);
+            const dbUser = await GetUserByEmail(user?.email as string);
             if (dbUser) {
                 tokenValue(token, dbUser);
             }
