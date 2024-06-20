@@ -65,6 +65,7 @@ export function TypingTest({
                 const transform = paragraphElement.style.transform;
                 const translateY = transform ? parseInt(transform.split("(")[1].split("px")[0]) : 0;
                 paragraphElement.style.transform = `translateY(${translateY - lineHeight}px)`;
+                paragraphElement.style.transition = "transform 0.3s ease-in-out";
             }
         }
     }, [currentCharIndex]);
