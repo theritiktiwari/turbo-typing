@@ -8,7 +8,6 @@ import { useSetting } from "@/hooks/use-setting";
 import languageList from "@/constants/languages/_list.json";
 import fontList from "@/constants/fonts/_list.json";
 import { CheckUsername, UpdateUser } from "@/services/users";
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/components/ui/toast";
 import { SettingModal } from "@/components/shared/modals/setting-modal";
@@ -278,26 +277,6 @@ export default function Page() {
                         >
                             CPS
                         </div>
-                    </div>
-                </div>
-
-                {/* Font Size */}
-                <div className="settings-box mt-5">
-                    <div className="w-full md:w-[50%] space-y-2">
-                        <div className="settings-title">
-                            <Type /> Font Size
-                        </div>
-                        <div className="description-text">
-                            Change the font size of the editor.
-                        </div>
-                    </div>
-                    <div className="flex-center gap-2">
-                        <Input
-                            type="number"
-                            className="w-[180px]"
-                            value={setting.fontSize}
-                            onChange={(e) => setting.updateFontSize(e.target.value)}
-                        />
                     </div>
                 </div>
 
