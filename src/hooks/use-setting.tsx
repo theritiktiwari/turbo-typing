@@ -2,7 +2,9 @@ import { Toast } from '@/components/ui/toast';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from "zustand/middleware";
 
-interface SettingStore {
+export interface SettingStore {
+  time: number;
+  updateTime: (data: number) => void;
   difficulty: string;
   updateDifficulty: (data: string) => void;
   language: string;
@@ -20,13 +22,19 @@ interface SettingStore {
 
 export const useSetting = create(
   persist<SettingStore>((set, get) => ({
-    difficulty: "BEGINNER",
+    time: 15,
+    updateTime: (data: number) => {
+      const { time } = get();
+      if (time === data) return;
+      set({ time: data });
+    },
+    difficulty: "beginner",
     updateDifficulty: (data: string) => {
       const { difficulty } = get();
       if (difficulty === data) return;
       set({ difficulty: data });
     },
-    language: "ENGLISH",
+    language: "english",
     updateLanguage: (data: string) => {
       const { language } = get();
       if (language === data) return;
@@ -38,7 +46,7 @@ export const useSetting = create(
       if (unit === data) return;
       set({ unit: data });
     },
-    fontSize: "12",
+    fontSize: "30",
     updateFontSize: (data: string) => {
       const { fontSize } = get();
       if (fontSize === data) return;
@@ -54,7 +62,7 @@ export const useSetting = create(
       try {
         const details = JSON.parse(data);
 
-        if (!details.difficulty || !details.language || !details.unit || !details.fontSize || !details.fontFamily) {
+        if (!details.time || !details.difficulty || !details.language || !details.unit || !details.fontSize || !details.fontFamily) {
           return Toast({ success: false, message: "Invalid settings data." })
         }
 
@@ -70,10 +78,11 @@ export const useSetting = create(
     },
     reset: () => {
       set({
-        difficulty: "BEGINNER",
-        language: "ENGLISH",
+        time: 15,
+        difficulty: "beginner",
+        language: "english",
         unit: "WPM",
-        fontSize: "12",
+        fontSize: "30",
         fontFamily: "Source Code Pro",
       });
       Toast({ success: true, message: "Settings reset to default." })

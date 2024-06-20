@@ -1,17 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowDownAZ, CaseSensitive, Gauge, RotateCw, Settings2, Star, Type } from "lucide-react";
+import { ArrowDownAZ, CaseSensitive, Gauge, RotateCw, Settings2, Star, Timer, Type } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useSetting } from "@/hooks/use-setting";
-import { languages } from "@/constants/language";
+import languageList from "@/constants/languages/_list.json";
 import { fonts } from "@/constants/fonts";
 import { CheckUsername, UpdateUser } from "@/services/users";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/components/ui/toast";
 import { SettingModal } from "@/components/shared/modals/setting-modal";
+
+interface Languages {
+    [key: string]: string;
+}
 
 export default function Page() {
     const [isMounted, setIsMounted] = useState(false);
@@ -33,6 +37,8 @@ export default function Page() {
     if (!isMounted) {
         return null;
     }
+
+    const languages: Languages = languageList;
 
     const exportSettings = () => {
         const settings = setting.export();
@@ -158,25 +164,54 @@ export default function Page() {
                     </div>
                     <div className="flex gap-2">
                         <div
-                            aria-label="beginner"
-                            className={cn("settings-toggle", setting.difficulty === "BEGINNER" ? "bg-main text-main-foreground" : "bg-secondary")}
-                            onClick={() => setting.updateDifficulty("BEGINNER")}
+                            className={cn("settings-toggle", setting.difficulty === "beginner" ? "bg-main text-main-foreground" : "bg-secondary")}
+                            onClick={() => setting.updateDifficulty("beginner")}
                         >
                             Beginner
                         </div>
                         <div
-                            aria-label="intermediate"
-                            className={cn("settings-toggle", setting.difficulty === "INTERMEDIATE" ? "bg-main text-main-foreground" : "bg-secondary")}
-                            onClick={() => setting.updateDifficulty("INTERMEDIATE")}
+                            className={cn("settings-toggle", setting.difficulty === "intermediate" ? "bg-main text-main-foreground" : "bg-secondary")}
+                            onClick={() => setting.updateDifficulty("intermediate")}
                         >
                             Intermediate
                         </div>
                         <div
-                            aria-label="expert"
-                            className={cn("settings-toggle", setting.difficulty === "EXPERT" ? "bg-main text-main-foreground" : "bg-secondary")}
-                            onClick={() => setting.updateDifficulty("EXPERT")}
+                            className={cn("settings-toggle", setting.difficulty === "expert" ? "bg-main text-main-foreground" : "bg-secondary")}
+                            onClick={() => setting.updateDifficulty("expert")}
                         >
                             Expert
+                        </div>
+                    </div>
+                </div>
+
+                {/* Test Time Duration */}
+                <div className="settings-box mt-5">
+                    <div className="w-full md:w-[50%] space-y-2">
+                        <div className="settings-title">
+                            <Timer /> Time Duration
+                        </div>
+                        <div className="description-text">
+                            Choose the time duration for the typing test.
+                        </div>
+                    </div>
+                    <div className="flex gap-2">
+                        <div
+                            className={cn("settings-toggle", setting.time === 15 ? "bg-main text-main-foreground" : "bg-secondary")}
+                            onClick={() => setting.updateTime(15)}
+                        >
+                            15 Sec
+                        </div>
+                        <div
+                            className={cn("settings-toggle", setting.time === 30 ? "bg-main text-main-foreground" : "bg-secondary")}
+                            onClick={() => setting.updateTime(30)}
+                        >
+                            30 Sec
+                        </div>
+                        <div
+                            className={cn("settings-toggle", setting.time === 60 ? "bg-main text-main-foreground" : "bg-secondary")}
+                            onClick={() => setting.updateTime(60)}
+                        >
+                            60 Sec
                         </div>
                     </div>
                 </div>
@@ -194,7 +229,7 @@ export default function Page() {
                         </div>
 
                         <div className="grid grid-cols-2 md:grid-cols-7 gap-3 w-full place-items-stretch">
-                            {languages && Object.keys(languages).map((key) => (
+                            {languages && Object.keys(languages).map((key: any) => (
                                 <div
                                     key={key}
                                     className={cn("settings-toggle md:w-[180px]", setting.language === key ? "bg-main text-main-foreground" : "bg-secondary")}
