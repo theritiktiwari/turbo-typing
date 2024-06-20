@@ -6,14 +6,14 @@ import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { useSetting } from "@/hooks/use-setting";
 import languageList from "@/constants/languages/_list.json";
-import { fonts } from "@/constants/fonts";
+import fontList from "@/constants/fonts/_list.json";
 import { CheckUsername, UpdateUser } from "@/services/users";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button";
 import { Toast } from "@/components/ui/toast";
 import { SettingModal } from "@/components/shared/modals/setting-modal";
 
-interface Languages {
+interface JSONList {
     [key: string]: string;
 }
 
@@ -38,7 +38,8 @@ export default function Page() {
         return null;
     }
 
-    const languages: Languages = languageList;
+    const languages: JSONList = languageList;
+    const fonts: JSONList = fontList;
 
     const exportSettings = () => {
         const settings = setting.export();
@@ -228,7 +229,7 @@ export default function Page() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-7 gap-3 w-full place-items-stretch">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 w-full place-items-stretch">
                             {languages && Object.keys(languages).map((key: any) => (
                                 <div
                                     key={key}
@@ -312,14 +313,14 @@ export default function Page() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-7 gap-3 w-full place-items-stretch">
-                            {fonts?.map((font) => (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 w-full place-items-stretch">
+                            {fonts && Object.keys(fonts).map((key: any) => (
                                 <div
-                                    key={font}
-                                    className={cn("settings-toggle md:w-[180px]", setting.fontFamily === font ? "bg-main text-main-foreground" : "bg-secondary")}
-                                    onClick={() => setting.updateFontFamily(font)}
+                                    key={key}
+                                    className={cn("settings-toggle md:w-[180px]", setting.fontFamily === key ? "bg-main text-main-foreground" : "bg-secondary")}
+                                    onClick={() => setting.updateFontFamily(key)}
                                 >
-                                    {font}
+                                    {fonts[key]}
                                 </div>
                             ))}
                         </div>

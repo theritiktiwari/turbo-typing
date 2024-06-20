@@ -52,7 +52,7 @@ export const useSetting = create(
       if (fontSize === data) return;
       set({ fontSize: data });
     },
-    fontFamily: "Source Code Pro",
+    fontFamily: "source_code_pro",
     updateFontFamily: (data: string) => {
       const { fontFamily } = get();
       if (fontFamily === data) return;
@@ -83,7 +83,7 @@ export const useSetting = create(
         language: "english",
         unit: "WPM",
         fontSize: "30",
-        fontFamily: "Source Code Pro",
+        fontFamily: "source_code_pro",
       });
       Toast({ success: true, message: "Settings reset to default." })
     },
