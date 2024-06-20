@@ -44,7 +44,7 @@ export default function Navbar() {
 
     const navRoutes = [
         {
-            href: "/",
+            href: "/test",
             icon: <Keyboard />,
             label: "Start Typing",
         },
