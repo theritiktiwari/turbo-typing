@@ -15,6 +15,7 @@ interface TypingTestProps {
         completedWords: string[];
         setCompletedWords: React.Dispatch<React.SetStateAction<string[]>>;
         setMistakeCounter: React.Dispatch<React.SetStateAction<number>>;
+        setCorrectWords: React.Dispatch<React.SetStateAction<string[]>>;
     }
 }
 
@@ -28,12 +29,14 @@ export function TypingTest({
         setTypedChars,
         completedWords,
         setCompletedWords,
-        setMistakeCounter
+        setMistakeCounter,
+        setCorrectWords
     }
 }: TypingTestProps) {
     const [currentCharIndex, setCurrentCharIndex] = useState(0);
     const [checkFocus, setCheckFocus] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const [currentWord, setCurrentWord] = useState('');
 
     useEffect(() => {
         if (document.activeElement === inputRef.current) {
@@ -49,6 +52,8 @@ export function TypingTest({
             setTypedChars([]);
             setMistakeCounter(0);
             setCompletedWords([]);
+            setCorrectWords([]);
+            setCurrentWord('');
         }
     }, [time, setting.time]);
 
@@ -85,22 +90,23 @@ export function TypingTest({
         }
         setTypedChars((prev) => prev.slice(0, newIndex));
         setCurrentCharIndex(newIndex);
+        setCurrentWord(paragraph.slice(newIndex, currentCharIndex));
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        const currentWord = paragraph.slice(
-            currentCharIndex - typedChars.length,
-            currentCharIndex
-        ).split(" ").pop();
+        const currentWordStartIndex = paragraph.slice(0, currentCharIndex).lastIndexOf(" ") + 1;
+        const currentWordEndIndex = paragraph.indexOf(" ", currentWordStartIndex + 1);
+        const correctWord = paragraph.slice(currentWordStartIndex, currentWordEndIndex === -1 ? undefined : currentWordEndIndex);
 
         if (e.key === "Backspace") {
             if (typedChars.length === 0) return;
 
             if (e.ctrlKey || e.altKey) {
                 handleCtrlBackspace();
-            } else if (typedChars.length > 0 && !completedWords.includes(currentWord!)) {
+            } else if (typedChars.length > 0 && !completedWords.includes(currentWord)) {
                 setTypedChars((prev) => prev.slice(0, -1));
                 setCurrentCharIndex((prev) => Math.max(prev - 1, 0));
+                setCurrentWord((prev) => prev.slice(0, -1));
             }
         } else if (e.key.length === 1) {
             handleTimer();
@@ -111,8 +117,16 @@ export function TypingTest({
             if (currentChar === newChar) {
                 setTypedChars((prev) => [...prev, newChar]);
                 setCurrentCharIndex((prev) => prev + 1);
+                setCurrentWord((prev) => prev + newChar);
+
                 if (newChar === " ") {
-                    setCompletedWords((prev) => [...prev, currentWord!]);
+                    if (!completedWords.includes(currentWord)) {
+                        setCompletedWords((prev) => [...prev, currentWord]);
+                        if (currentWord.trim() === correctWord) {
+                            setCorrectWords((prev) => [...prev, currentWord.trim()]);
+                        }
+                    }
+                    setCurrentWord('');
                 }
             } else {
                 setTypedChars((prev) => [...prev, newChar]);
@@ -120,7 +134,13 @@ export function TypingTest({
                 setMistakeCounter((prev) => prev + 1);
             }
         } else if (e.key === " ") {
-            setCompletedWords((prev) => [...prev, currentWord!]);
+            if (!completedWords.includes(currentWord)) {
+                setCompletedWords((prev) => [...prev, currentWord]);
+                if (currentWord.trim() === correctWord) {
+                    setCorrectWords((prev) => [...prev, currentWord.trim()]);
+                }
+            }
+            setCurrentWord('');
         }
     };
 

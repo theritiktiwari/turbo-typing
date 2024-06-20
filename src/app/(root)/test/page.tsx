@@ -14,6 +14,7 @@ export default function Page() {
     const [paragraph, setParagraph] = useState<string>("");
     const [characters, setCharacters] = useState<string[]>([]);
     const [words, setWords] = useState<string[]>([]);
+    const [correctWords, setCorrectWords] = useState<string[]>([]);
     const [mistakes, setMistakes] = useState(0);
 
     const loadWords = async () => {
@@ -98,6 +99,7 @@ export default function Page() {
                         typedChars: characters,
                         setTypedChars: setCharacters,
                         setMistakeCounter: setMistakes,
+                        setCorrectWords: setCorrectWords,
                         completedWords: words,
                         setCompletedWords: setWords
                     }}
