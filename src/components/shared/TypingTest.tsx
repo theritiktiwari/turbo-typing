@@ -35,8 +35,9 @@ export function TypingTest({
 }: TypingTestProps) {
     const [currentCharIndex, setCurrentCharIndex] = useState(0);
     const [checkFocus, setCheckFocus] = useState(false);
-    const inputRef = useRef<HTMLInputElement>(null);
     const [currentWord, setCurrentWord] = useState('');
+    const [mobileDevice, setMobileDevice] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (document.activeElement === inputRef.current) {
@@ -95,6 +96,9 @@ export function TypingTest({
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.keyCode === 229 && typedChars.length === 0) {
+            setMobileDevice(true);
+        }
         const currentWordStartIndex = paragraph.slice(0, currentCharIndex).lastIndexOf(" ") + 1;
         const currentWordEndIndex = paragraph.indexOf(" ", currentWordStartIndex + 1);
         const correctWord = paragraph.slice(currentWordStartIndex, currentWordEndIndex === -1 ? undefined : currentWordEndIndex);
@@ -151,9 +155,16 @@ export function TypingTest({
                 ref={inputRef}
                 type="text"
                 className="absolute opacity-0 pointer-events-none"
-                onKeyDown={handleKeyDown}
+                onKeyUp={handleKeyDown}
             />
-            <div
+            {mobileDevice ? <div className="p-5 border text-center rounded-md">
+                <div className="flex-center w-full h-full">
+                    <span className="font-medium">
+                        Your mobile device is not compatible with this test. <br />
+                        Please use computer/laptop for better experience.
+                    </span>
+                </div>
+            </div> : <div
                 className={`typing-test__input`}
                 onClick={handleFocus}
             >
@@ -179,7 +190,7 @@ export function TypingTest({
                         </div>
                     ) : (<Loader />)}
                 </>}
-            </div >
+            </div>}
         </>
     );
 }
