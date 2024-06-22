@@ -280,33 +280,6 @@ export default function Page() {
                     </div>
                 </div>
 
-                {/* Font Family */}
-                <div className="settings-box mt-5">
-                    <div className="flex flex-col gap-4 w-full">
-                        <div className="w-full space-y-2">
-                            <div className="settings-title">
-                                <CaseSensitive /> Font Family
-                            </div>
-                            <div className="description-text">
-                                Select the font family for the editor.
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 w-full place-items-stretch">
-                            {fonts && Object.keys(fonts).map((key: any) => (
-                                <div
-                                    key={key}
-                                    className={cn("settings-toggle md:w-[180px]", setting.fontFamily === key ? "bg-main text-main-foreground" : "bg-secondary")}
-                                    onClick={() => setting.updateFontFamily(key)}
-                                >
-                                    {fonts[key]}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                </div>
-
                 {/* Import/Export Setings */}
                 <div className="settings-box mt-5">
                     <div className="w-full md:w-[50%] space-y-2">

@@ -11,8 +11,6 @@ export interface SettingStore {
   updateLanguage: (data: string) => void;
   unit: string;
   updateUnit: (data: string) => void;
-  fontFamily: string;
-  updateFontFamily: (data: string) => void;
   import: (data: string) => void;
   export: () => void;
   reset: () => void;
@@ -44,12 +42,6 @@ export const useSetting = create(
       if (unit === data) return;
       set({ unit: data });
     },
-    fontFamily: "source_code_pro",
-    updateFontFamily: (data: string) => {
-      const { fontFamily } = get();
-      if (fontFamily === data) return;
-      set({ fontFamily: data });
-    },
     import: (data: string) => {
       try {
         const details = JSON.parse(data);
@@ -57,8 +49,7 @@ export const useSetting = create(
         if (!details.time ||
           !details.difficulty ||
           !details.language ||
-          !details.unit ||
-          !details.fontFamily) {
+          !details.unit) {
           return Toast({ success: false, message: "Invalid settings data." })
         }
 
@@ -78,7 +69,6 @@ export const useSetting = create(
         difficulty: "beginner",
         language: "english",
         unit: "WPM",
-        fontFamily: "source_code_pro",
       });
       Toast({ success: true, message: "Settings reset to default." })
     },
