@@ -148,12 +148,13 @@ export default function Page() {
 
             // calculate experience and level
             const baseExp = setting.difficulty === "beginner" ? 10 : setting.difficulty === "intermediate" ? 20 : 30;
+            const timeFactor = time / 10;
             const accuracyFactor = accuracy / 100;
             const speedFactor = wpm / 10;
             const mistakeFactor = mistakes > 0 ? 1 / mistakes : 1;
 
             const oldExperience = session.user?.experience;
-            const experience = Math.floor(baseExp * accuracyFactor * speedFactor * mistakeFactor) + oldExperience;
+            const experience = Math.floor(baseExp * timeFactor * accuracyFactor * speedFactor * mistakeFactor) + oldExperience;
             const level = Math.floor(experience / 200) + 1;
 
             // save the new experience and level to the database
