@@ -170,28 +170,26 @@ export function TypingTest({
                 className={`typing-test__input`}
                 onClick={handleFocus}
             >
-                {!checkFocus ? (<div className="flex-center w-full h-full text-[30px]">
-                    <span className="font-medium">Click to focus</span>
-                </div>) : <>
-                    {paragraph.length > 0 ? (
-                        <div id="typing-test__paragraph" className={"text-[30px] text-muted-foreground"}>
-                            {paragraph.split("").map((char, index) => {
-                                let charClass = "";
-                                if (index < currentCharIndex) {
-                                    charClass = typedChars[index] === char ? "text-success" : "text-destructive";
-                                } else if (index === currentCharIndex && currentCharIndex !== 0) {
-                                    charClass = "typing-test__current_index relative";
-                                }
+                {paragraph.length > 0 ? <>
+                    {!checkFocus ? (<div className="flex-center w-full h-full text-[30px]">
+                        <span className="font-medium">Click to focus</span>
+                    </div>) : <div id="typing-test__paragraph" className={"text-[30px] text-muted-foreground"}>
+                        {paragraph.split("").map((char, index) => {
+                            let charClass = "";
+                            if (index < currentCharIndex) {
+                                charClass = typedChars[index] === char ? "text-success" : "text-destructive";
+                            } else if (index === currentCharIndex && currentCharIndex !== 0) {
+                                charClass = "typing-test__current_index relative";
+                            }
 
-                                return (
-                                    <span key={index} className={charClass}>
-                                        {char}
-                                    </span>
-                                );
-                            })}
-                        </div>
-                    ) : (<Loader />)}
-                </>}
+                            return (
+                                <span key={index} className={charClass}>
+                                    {char}
+                                </span>
+                            );
+                        })}
+                    </div>}
+                </> : <Loader />}
             </div>}
         </>
     );
