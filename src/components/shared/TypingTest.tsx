@@ -37,6 +37,7 @@ export function TypingTest({
     const [checkFocus, setCheckFocus] = useState(false);
     const [currentWord, setCurrentWord] = useState('');
     const [mobileDevice, setMobileDevice] = useState(false);
+    const [timerStarted, setTimerStarted] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -78,27 +79,16 @@ export function TypingTest({
         }
     };
 
-    const handleCtrlBackspace = () => {
-        const currentWord = paragraph.slice(
-            currentCharIndex - typedChars.length,
-            currentCharIndex
-        ).split(" ").pop();
-
-        if (completedWords.includes(currentWord!)) return;
-
-        let newIndex = currentCharIndex;
-        while (newIndex > 0 && paragraph[newIndex - 1] !== " ") {
-            newIndex--;
-        }
-        setTypedChars((prev) => prev.slice(0, newIndex));
-        setCurrentCharIndex(newIndex);
-        setCurrentWord(paragraph.slice(newIndex, currentCharIndex));
-    };
-
     const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.keyCode === 229 && typedChars.length === 0) {
             setMobileDevice(true);
         }
+
+        if (!timerStarted) {
+            handleTimer();
+            setTimerStarted(true);
+        }
+
         const currentWordStartIndex = paragraph.slice(0, currentCharIndex).lastIndexOf(" ") + 1;
         const currentWordEndIndex = paragraph.indexOf(" ", currentWordStartIndex + 1);
         const correctWord = paragraph.slice(currentWordStartIndex, currentWordEndIndex === -1 ? undefined : currentWordEndIndex);
@@ -106,16 +96,28 @@ export function TypingTest({
         if (e.key === "Backspace") {
             if (typedChars.length === 0) return;
 
+            const currWord = paragraph.slice(
+                currentCharIndex - typedChars.length,
+                currentCharIndex
+            ).split(" ").pop();
+
+            if (completedWords.includes(currWord!)) return;
+
             if (e.ctrlKey || e.altKey) {
-                handleCtrlBackspace();
-            } else if (typedChars.length > 0 && !completedWords.includes(currentWord)) {
+                let newIndex = currentCharIndex;
+                while (newIndex > 0 && paragraph[newIndex - 1] !== " ") {
+                    newIndex--;
+                }
+
+                setTypedChars((prev) => prev.slice(0, newIndex));
+                setCurrentCharIndex(newIndex);
+                setCurrentWord(paragraph.slice(newIndex, currentCharIndex));
+            } else {
                 setTypedChars((prev) => prev.slice(0, -1));
                 setCurrentCharIndex((prev) => Math.max(prev - 1, 0));
                 setCurrentWord((prev) => prev.slice(0, -1));
             }
         } else if (e.key.length === 1) {
-            handleTimer();
-
             const currentChar = paragraph[currentCharIndex];
             const newChar = e.key;
 
@@ -155,7 +157,7 @@ export function TypingTest({
                 ref={inputRef}
                 type="text"
                 className="absolute opacity-0 pointer-events-none"
-                onKeyUp={handleKeyDown}
+                onKeyDown={handleKeyDown}
             />
             {mobileDevice ? <div className="p-5 border text-center rounded-md">
                 <div className="flex-center w-full h-full">
