@@ -10,7 +10,7 @@ const UserSchema: Schema<IUser> = new Schema({
         lowercase: true,
         match: [/.+\@.+\..+/, 'Email address is not valid']
     },
-    badges: { type: [String] },
+    badges: { type: [String], default: ["Keyboard Novice"] },
     experience: { type: Number, default: 0 },
     level: { type: Number, default: 1 },
     usernameChangeDate: { type: Date },
