@@ -11,6 +11,7 @@ const tokenValue = (token: any, user: any) => {
     token.email = user.email;
     token.role = user.role;
     token.level = user.level;
+    token.experience = user.experience;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -34,6 +35,7 @@ export const authOptions: NextAuthOptions = {
                 token.username = session?.username ?? token.username;
                 token.role = session?.role ?? token.role;
                 token.level = session?.level ?? token.level;
+                token.experience = session?.experience ?? token.experience;
             }
 
             await dbConnect();
@@ -51,6 +53,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.email = token.email;
                 session.user.role = token.role;
                 session.user.level = token.level;
+                session.user.experience = token.experience;
             }
             return session;
         }

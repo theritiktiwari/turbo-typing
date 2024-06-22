@@ -7,6 +7,8 @@ import { serverSession } from "@/helper/serverSession";
 interface UpdateUserPayload {
     id: string;
     username?: string;
+    level?: number;
+    experience?: number;
     email?: string;
     role?: string;
 }
@@ -24,6 +26,14 @@ function UserVaildationCheck(payload: any) {
 
     if (payload?.username && !/^[a-zA-Z0-9_]*$/.test(payload?.username)) {
         return new Response("No special characters allowed in username.").error();
+    }
+
+    if (payload?.level && payload?.level < 1 && isNaN(payload?.level)) {
+        return new Response("Invalid level.").error();
+    }
+
+    if (payload?.experience && isNaN(payload?.experience)) {
+        return new Response("Invalid experience.").error();
     }
 
     if (payload?.email && !/^\S+@\S+\.\S+$/.test(payload?.email)) {
@@ -115,25 +125,33 @@ export async function UpdateUser(payload: UpdateUserPayload) {
             return new Response("User not found.").error();
         }
 
-        // remove white spaces and convert to lowercase
-        payload.username = payload.username?.replace(/\s/g, "").toLowerCase();
+        if (payload?.username) {
+            // remove white spaces and convert to lowercase
+            payload.username = payload.username?.replace(/\s/g, "").toLowerCase();
+        }
 
         if (session?.user?.role === "ADMIN") {
             user.username = payload.username ?? user.username;
             user.email = payload.email ?? user.email;
             user.role = payload.role ?? user.role;
+            user.level = payload.level ?? user.level;
+            user.experience = payload.experience ?? user.experience;
         }
 
         if (session?.user?.role === "USER" && session?.user?._id === payload.id) {
-            if (user?.usernameChangeDate) {
-                const changeDate = new Date(user?.usernameChangeDate);
-                if (!CheckTheDate(changeDate)) {
-                    return new Response("You can change your username only once in 30 days.").error();
+            if (payload?.username) {
+                if (user?.usernameChangeDate) {
+                    const changeDate = new Date(user?.usernameChangeDate);
+                    if (!CheckTheDate(changeDate)) {
+                        return new Response("You can change your username only once in 30 days.").error();
+                    }
                 }
+                user.username = payload?.username ?? user.username;
+                user.usernameChangeDate = new Date();
             }
 
-            user.username = payload?.username ?? user.username;
-            user.usernameChangeDate = new Date();
+            user.level = payload.level ?? user.level;
+            user.experience = payload.experience ?? user.experience;
         }
 
         await user.save();

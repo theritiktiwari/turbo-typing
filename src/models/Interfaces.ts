@@ -29,7 +29,10 @@ export interface ILesson extends Document {
 export interface ITestResult extends Document {
     userId: Schema.Types.ObjectId;
     wpm: number;
+    wps: number;
+    cpm: number;
+    cps: number;
     accuracy: number;
     duration: number; // Duration of the typing test in seconds
-    textSnippet: string; // The paragraph or text snippet used for the test
+    language: string; 
 }
