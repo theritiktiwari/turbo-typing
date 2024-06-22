@@ -34,8 +34,8 @@ export default function Page() {
     const loadWords = async () => {
         try {
             const { language } = setting;
-            const module = await import(`@/constants/languages/${language}.json`);
-            const wordsArray = module.default[setting.difficulty];
+            const languageName = await import(`@/constants/languages/${language}.json`);
+            const wordsArray = languageName.default[setting.difficulty];
             wordsArray.push(...wordsArray);
             wordsArray.sort(() => Math.random() - 0.5);
 
