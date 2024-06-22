@@ -205,6 +205,14 @@
   @apply absolute top-0 left-0 w-[4px] h-full bg-main content-[''] animate-[blink_1s_ease-in-out_infinite];
 }
 
+.typing-test__results {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-5;
+}
+
+.results__box {
+  @apply bg-secondary p-4 rounded-lg flex-center gap-2 md:flex-col md:h-40;
+}
+
 @keyframes blink {
 
   0%,
