@@ -5,12 +5,17 @@ import { TypingTest } from "@/components/shared/TypingTest";
 import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import languageList from "@/constants/languages/_list.json";
+import { useSession } from "next-auth/react";
+import { addTestResult } from "@/services/tests";
+import { UpdateUser } from "@/services/users";
 
 interface JSONList {
     [key: string]: string;
 }
 
 export default function Page() {
+    const { data: session, update } = useSession();
+
     const setting = useSetting();
     const languages: JSONList = languageList;
     const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -94,7 +99,7 @@ export default function Page() {
         }
     };
 
-    const saveResult = () => {
+    const saveResult = async () => {
         // show the result to the user 
         const wordTyped = correctWords.length;
         const charactersTyped = characters.filter((char) => char !== " ").length;
@@ -128,8 +133,38 @@ export default function Page() {
             speed
         });
 
-        //TODO: Save the result to the database if loggedin 
-    }
+        if (session?.user) {
+            // save the result to the database
+            await addTestResult({
+                userId: session.user?._id,
+                wpm,
+                wps,
+                cpm,
+                cps,
+                accuracy,
+                duration: time,
+                language: setting.language
+            });
+
+            // calculate experience and level
+            const baseExp = setting.difficulty === "beginner" ? 10 : setting.difficulty === "intermediate" ? 20 : 30;
+            const accuracyFactor = accuracy / 100;
+            const speedFactor = wpm / 10;
+            const mistakeFactor = mistakes > 0 ? 1 / mistakes : 1;
+
+            const oldExperience = session.user?.experience;
+            const experience = Math.floor(baseExp * accuracyFactor * speedFactor * mistakeFactor) + oldExperience;
+            const level = Math.floor(experience / 200) + 1;
+
+            // save the new experience and level to the database
+            const response = await UpdateUser({ id: session?.user?._id, level, experience });
+
+            // update the session with the new experience and level
+            if (response.success) {
+                update({ level, experience });
+            }
+        }
+    };
 
     return (
         <div className="typing-test__box">
