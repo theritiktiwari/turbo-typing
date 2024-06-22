@@ -104,14 +104,14 @@ export default function Page() {
         const wordTyped = correctWords.length;
         const charactersTyped = characters.filter((char) => char !== " ").length;
         const correctCharacters = correctWords.reduce((acc, word) => acc + word.length, 0);
-        const accuracy = Math.floor(100 - ((mistakes / charactersTyped) * 100));
+        const accuracy = correctCharacters > 0 ? Math.floor(100 - ((mistakes / charactersTyped) * 100)) : 0;
         const language = languages[setting.language];
         const time = setting.time;
         const unit = setting.unit;
-        const wpm = Math.round(((charactersTyped - mistakes) / 5) / (setting.time / 60));
-        const cpm = Math.round((charactersTyped - mistakes) / (setting.time / 60));
-        const wps = Math.round((charactersTyped - mistakes) / setting.time);
-        const cps = Math.round((charactersTyped - mistakes) / setting.time);
+        const wpm = accuracy > 0 ? Math.round(((charactersTyped - mistakes) / 5) / (setting.time / 60)) : 0;
+        const cpm = accuracy > 0 ? Math.round((charactersTyped - mistakes) / (setting.time / 60)) : 0;
+        const wps = accuracy > 0 ? Math.round(((charactersTyped - mistakes) / 5) / setting.time) : 0;
+        const cps = accuracy > 0 ? Math.round((charactersTyped - mistakes) / setting.time) : 0;
 
         let speed = "";
         if (unit === "WPM") {
