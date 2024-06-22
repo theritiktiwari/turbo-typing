@@ -13,6 +13,19 @@ interface UpdateUserPayload {
     role?: string;
 }
 
+const badges: Record<string, number[]> = {
+    "Keyboard Novice": [1, 2, 3, 4, 5],
+    "Steady Starter": [6, 7, 8, 9, 10],
+    "Quick Learner": [11, 12, 13, 14, 15],
+    "Typing Apprentice": [16, 17, 18, 19, 20],
+    "Speed Demon": [21, 22, 23, 24, 25],
+    "Typing Virtuoso": [26, 27, 28, 29, 30],
+    "Typing Elite": [31, 32, 33, 34, 35],
+    "Master of Keys": [36, 37, 38, 39, 40],
+    "Typing Titan": [41, 42, 43, 44, 45],
+    "Legendary Typist": [46, 47, 48, 49, 50],
+};
+
 export async function AdminCheck(session: any) {
     if (!session || session?.user?.role !== "ADMIN") {
         return new Response("Unauthorized Access.").error();
@@ -152,6 +165,20 @@ export async function UpdateUser(payload: UpdateUserPayload) {
 
             user.level = payload.level ?? user.level;
             user.experience = payload.experience ?? user.experience;
+
+            if (payload?.level) {
+                const level = payload?.level;
+                let userBadges = user?.badges ?? [];
+
+                // get the level and find from the badges object values, if the level is in the array then add the badge (key) to the badges array
+                Object.keys(badges).forEach((key) => {
+                    if (!userBadges.includes(key) && badges[key].includes(level)) {
+                        userBadges.push(key);
+                    }
+                });
+
+                user.badges = userBadges;
+            }
         }
 
         await user.save();
