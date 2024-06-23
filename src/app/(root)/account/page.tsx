@@ -1,6 +1,7 @@
 import { GetCurrentUser } from "@/services/users";
 import { getTestResults } from "@/services/tests";
 import { AccountDetails } from "@/components/shared/AccountDetails";
+import { TestDetails } from "@/components/shared/TestDetails";
 
 export default async function Page() {
     const userResponse = await GetCurrentUser();
@@ -9,8 +10,6 @@ export default async function Page() {
     const testResponse = await getTestResults({ userId: user?._id.toString() });
     // @ts-ignore
     const tests = testResponse?.value;
-
-    console.log({ user, test: tests[0] });
 
     const experienceProgress = (user?.experience / (user?.level * 200)) * 100;
 
@@ -23,7 +22,7 @@ export default async function Page() {
         ${seconds < 10 ? ("0" + seconds) : seconds}`;
 
     return (
-        <div className="main-container">
+        <div className="main-container h-[65vh] sm:h-[63vh] md:h-[70vh]">
             <AccountDetails
                 user={user}
                 experience={experienceProgress}
@@ -31,6 +30,7 @@ export default async function Page() {
                 timing={testTiming}
             />
 
+            <TestDetails tests={tests} />
         </div>
     );
 }

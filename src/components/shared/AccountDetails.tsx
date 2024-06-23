@@ -73,7 +73,7 @@ export const AccountDetails = ({ user, experience, tests, timing }: AccountDetai
                 </div>
             </div>
 
-            <div className="flex-between md:flex-around gap-10">
+            <div className="flex items-center justify-between md:justify-around gap-10">
                 <div className="flex-center flex-col gap-2">
                     <p className="description-text">Total Tests</p>
                     <h1 className="text-2xl">{tests}</h1>
@@ -85,7 +85,7 @@ export const AccountDetails = ({ user, experience, tests, timing }: AccountDetai
                 </div>
             </div>
 
-            <div className="flex-between md:flex-around gap-5">
+            <div className="flex items-center justify-between md:justify-around gap-5">
                 <div className={`social-link-icons ${!user?.instagramUsername && "pointer-events-none"}`}>
                     <Link href={`https://www.instagram.com/${user?.instagramUsername}`} target="_blank">
                         <Instagram />

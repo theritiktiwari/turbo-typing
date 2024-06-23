@@ -230,9 +230,13 @@
 }
 
 .account__top-box {
-  @apply flex md:items-center justify-between flex-col md:flex-row gap-10 p-5 bg-secondary rounded-xl;
+  @apply flex lg:items-center justify-between flex-col lg:flex-row gap-10 p-5 bg-secondary rounded-xl;
 }
 
 .social-link-icons {
   @apply flex-center text-secondary bg-main p-2 rounded-full cursor-pointer;
+}
+
+.account__test-box {
+  @apply mt-5 p-5 bg-secondary rounded-xl;
 }
