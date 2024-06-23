@@ -9,6 +9,10 @@ interface UpdateUserPayload {
     username?: string;
     level?: number;
     experience?: number;
+    instagramUsername?: string;
+    linkedinUsername?: string;
+    twitterUsername?: string;
+    website?: string;
     email?: string;
     role?: string;
 }
@@ -47,6 +51,10 @@ function UserVaildationCheck(payload: any) {
 
     if (payload?.experience && isNaN(payload?.experience)) {
         return new Response("Invalid experience.").error();
+    }
+
+    if (payload?.website && !/^(ftp|http|https):\/\/[^ "]+$/.test(payload?.website)) {
+        return new Response("Invalid website URL.").error();
     }
 
     if (payload?.email && !/^\S+@\S+\.\S+$/.test(payload?.email)) {
@@ -149,6 +157,10 @@ export async function UpdateUser(payload: UpdateUserPayload) {
             user.role = payload.role ?? user.role;
             user.level = payload.level ?? user.level;
             user.experience = payload.experience ?? user.experience;
+            user.instagramUsername = payload.instagramUsername ?? user.instagramUsername;
+            user.linkedinUsername = payload.linkedinUsername ?? user.linkedinUsername;
+            user.twitterUsername = payload.twitterUsername ?? user.twitterUsername;
+            user.website = payload.website ?? user.website;
         }
 
         if (session?.user?.role === "USER" && session?.user?._id === payload.id) {
@@ -163,10 +175,10 @@ export async function UpdateUser(payload: UpdateUserPayload) {
                 user.usernameChangeDate = new Date();
             }
 
-            user.level = payload.level ?? user.level;
-            user.experience = payload.experience ?? user.experience;
-
             if (payload?.level) {
+                user.level = payload.level ?? user.level;
+                user.experience = payload.experience ?? user.experience;
+
                 const level = payload?.level;
                 let userBadges = user?.badges ?? [];
 
@@ -178,6 +190,22 @@ export async function UpdateUser(payload: UpdateUserPayload) {
                 });
 
                 user.badges = userBadges;
+            }
+
+            if (payload?.instagramUsername) {
+                user.instagramUsername = payload.instagramUsername ?? undefined;
+            }
+
+            if (payload?.linkedinUsername) {
+                user.linkedinUsername = payload.linkedinUsername ?? undefined;
+            }
+
+            if (payload?.twitterUsername) {
+                user.twitterUsername = payload.twitterUsername ?? undefined;
+            }
+
+            if (payload?.website) {
+                user.website = payload.website ?? undefined;
             }
         }
 
