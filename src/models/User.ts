@@ -14,8 +14,6 @@ const UserSchema: Schema<IUser> = new Schema({
     experience: { type: Number, default: 0 },
     level: { type: Number, default: 1 },
     usernameChangeDate: { type: Date },
-    typingLessonsProgress: { type: Map, of: Boolean },
-    touchTypingProgress: { type: Number },
     role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
     instagramUsername: { type: String },
     twitterUsername: { type: String },

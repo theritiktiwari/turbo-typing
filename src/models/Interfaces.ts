@@ -10,8 +10,6 @@ export interface IUser extends Document {
     experience: number;
     level: number;
     badges?: string[];
-    typingLessonsProgress?: { [lessonId: string]: boolean };
-    touchTypingProgress?: number;
     instagramUsername?: string;
     twitterUsername?: string;
     linkedinUsername?: string;
