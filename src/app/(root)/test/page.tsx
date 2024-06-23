@@ -2,7 +2,7 @@
 
 import { useSetting } from "@/hooks/use-setting";
 import { TypingTest } from "@/components/shared/TypingTest";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import languageList from "@/constants/languages/_list.json";
 import { useSession } from "next-auth/react";
@@ -36,7 +36,15 @@ export default function Page() {
         speed: ""
     });
 
-    const loadWords = async () => {
+    const debounce = (func: Function, wait: number) => {
+        let timeout: NodeJS.Timeout;
+        return (...args: any) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
+        };
+    };
+
+    const loadWords = useCallback(debounce(async () => {
         try {
             const { language } = setting;
             const languageName = await import(`@/constants/languages/${language}.json`);
@@ -49,7 +57,7 @@ export default function Page() {
         } catch (error) {
             console.error("Error while loading words:", error);
         }
-    };
+    }, 300), [setting]);
 
     useEffect(() => {
         setIsMounted(true);
