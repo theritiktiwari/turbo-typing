@@ -1,12 +1,16 @@
-"use client";
-
 import { GetCurrentUser } from "@/services/users";
 import { getTestResults } from "@/services/tests";
 import { AccountDetails } from "@/components/shared/AccountDetails";
 import { TestDetails } from "@/components/shared/TestDetails";
+import { redirect } from "next/navigation";
+
+export const dynamic = 'force-dynamic';
 
 export default async function Page() {
     const userResponse = await GetCurrentUser();
+    if (!userResponse?.success) {
+        redirect("/auth");
+    }
     // @ts-ignore
     const user = userResponse?.value;
     const testResponse = await getTestResults({ userId: user?._id.toString() });
