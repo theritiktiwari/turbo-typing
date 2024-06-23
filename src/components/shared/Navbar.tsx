@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signOut, useSession } from "next-auth/react";
-import { Info, Keyboard, LogOut, Settings, UserRound } from "lucide-react";
+import { Keyboard, LogOut, Settings, UserRound } from "lucide-react";
 import { FaUserCircle } from "react-icons/fa";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Loader } from "@/components/ui/loader";
@@ -47,11 +47,6 @@ export default function Navbar() {
             href: "/test",
             icon: <Keyboard />,
             label: "Start Typing",
-        },
-        {
-            href: "/about",
-            icon: <Info />,
-            label: "About",
         },
         {
             href: "/settings",

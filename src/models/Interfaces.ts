@@ -19,13 +19,6 @@ export interface IUser extends Document {
     role: string;
 }
 
-export interface ILesson extends Document {
-    title: string;
-    content: string;
-    level: number;
-    difficulty: string;
-}
-
 export interface ITestResult extends Document {
     userId: Schema.Types.ObjectId;
     wpm: number;
