@@ -1,3 +1,5 @@
+"use client";
+
 import { GetCurrentUser } from "@/services/users";
 import { getTestResults } from "@/services/tests";
 import { AccountDetails } from "@/components/shared/AccountDetails";
